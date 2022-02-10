@@ -11,6 +11,12 @@ end
 template '/var/www/html/index.html' do
   source 'index.html.erb'
   action :create
+  notifies :restart, 'service[httpd]', :immediately
+end
+
+service 'httpd' do
+  action [:enable, :start]
+  # subscribes :restart, 'template[/var/www/html/index.html]', :immediately
 end
 
 # bash 'inline script' do
@@ -45,13 +51,9 @@ end
 #   not_if '[ -d /var/www/mysites/ ]'
 # end
 
-directory '/var/www/mysites/' do
-  owner 'apache'
-  group 'apache'
-  recursive true
-  action :create
-end
-
-service 'httpd' do
-  action [:enable, :start]
-end
+# directory '/var/www/mysites/' do
+#   owner 'apache'
+#   group 'apache'
+#   recursive true
+#   action :create
+# end
